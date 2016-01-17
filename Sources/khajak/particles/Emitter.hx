@@ -10,6 +10,7 @@ class Emitter {
 	private var active: Bool;
 	
 	private var position: FastVector3;
+	private var radius: Float;
 	private var direction: FastVector3;
 	private var spreadAngle: Float;
 	private var affectedByGravity: Bool;
@@ -20,7 +21,9 @@ class Emitter {
 	private var texture: Image;
 	private var mesh: Mesh;
 	
-	private var rate: Float;
+	private var rateMin: Float;
+	private var rateMax: Float;
+	private var rateNext: Float;
 	private var maxCount: Int;
 	private var sinceLastEmission: Float;
 	private var remainingTime: Float;
@@ -38,8 +41,9 @@ class Emitter {
 		return particleCounts[currentBufferId];
 	}
 	
-	public function new(position: FastVector3, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speed: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rate: Float, maxCount: Int, mesh: Mesh) {
+	public function new(position: FastVector3, radius: Float, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speed: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int, mesh: Mesh) {
 		this.position = position;
+		this.radius = radius;
 		this.direction = direction;
 		direction.normalize();
 		this.spreadAngle = spreadAngle;
@@ -49,7 +53,9 @@ class Emitter {
 		this.size = [ sizeMin, sizeMax ];
 		this.texture = texture;
 		this.mesh = mesh;
-		this.rate = rate;
+		this.rateMin = rateMin;
+		this.rateMax = rateMax;
+		rateNext = getRandomValue(rateMin, rateMax);
 		this.maxCount = maxCount;
 		
 		particleBuffers = [ new Array<Particle>(), new Array<Particle>() ];
@@ -61,7 +67,7 @@ class Emitter {
 	public function start(time: Float) {
 		active = true;
 		remainingTime = time;
-		sinceLastEmission = rate;
+		sinceLastEmission = rateNext;
 	}
 	
 	public function stop() {
@@ -88,8 +94,9 @@ class Emitter {
 		currentBufferId = 1 - currentBufferId;
 		
 		if (remainingTime > 0 && particleCounts[currentBufferId] < maxCount) {
-			while (sinceLastEmission >= rate) {
-				sinceLastEmission -= rate;
+			while (sinceLastEmission >= rateNext) {
+				sinceLastEmission -= rateNext;
+				rateNext = getRandomValue(rateMin, rateMax);
 				emitParticle();
 			}
 		}
@@ -102,16 +109,22 @@ class Emitter {
 		
 		var movement = direction.mult(speed);
 		// TODO: spreadAngle
+		//var offsetVector = new FastVector3(0, 1, 0);
+		//var position = this.position.add(offsetVector.mult(getRandomValue(0, this.range));
 		
 		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(position, movement, affectedByGravity, timeToLive, size, texture, mesh);
 		particleCounts[currentBufferId] ++;
 	}
 	
-	private function getRandomValueInRange(range: Vector2): Float {
-		return range.x + Math.random() * (range.y - range.x);
+	private inline function getRandomValue(min: Float, max: Float): Float {
+		return min + Math.random() * (max - min);
 	}
 	
-	private function getRandomVectorValueInRange(range: Array<FastVector2>): FastVector2 {
+	private inline function getRandomValueInRange(range: Vector2): Float {
+		return getRandomValue(range.x, range.y);
+	}
+	
+	private inline function getRandomVectorValueInRange(range: Array<FastVector2>): FastVector2 {
 		return new FastVector2(range[0].x + Math.random() * (range[1].x - range[0].x), range[0].y + Math.random() * (range[1].y - range[0].y));
 	}
 }
