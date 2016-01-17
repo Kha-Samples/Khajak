@@ -21,6 +21,7 @@ class BillboardPipeline {
 	
 	public var centerID: ConstantLocation;
 	public var sizeID: ConstantLocation;
+	public var rotDataID: ConstantLocation;
 	public var mvpMatrixID: ConstantLocation;
 	
 	public function new(fragmentShader: FragmentShader, vertexShader: VertexShader, inputLayout: Array<VertexStructure>) {
@@ -41,6 +42,7 @@ class BillboardPipeline {
 		
 		centerID = pipeline.getConstantLocation("centerWorldspace");
 		sizeID = pipeline.getConstantLocation("sizeWorldspace");
+		rotDataID = pipeline.getConstantLocation("rotData");
 		mvpMatrixID = pipeline.getConstantLocation("mvpMatrix");
 	}
 	

@@ -13,18 +13,20 @@ class Particle {
 	
 	private var timeToLive: Float;
 	public var size: FastVector2;
+	public var rotData: FastVector2;
 	public var texture: Image;
 	public var mesh: Mesh;
 	
 	public var model: FastMatrix4;
 	
-	public function new(position: FastVector3, movement: FastVector3, affectedByGravity: Bool, timeToLive: Float, size: FastVector2, texture: Image) {
+	public function new(position: FastVector3, angle: Float, movement: FastVector3, affectedByGravity: Bool, timeToLive: Float, size: FastVector2, texture: Image) {
 		this.position = position;
 		this.movement = movement;
 		this.gravity = new FastVector3(0, 0, 0);
 		this.affectedByGravity = affectedByGravity;
 		this.timeToLive = timeToLive;
 		this.size = size;
+		this.rotData = new FastVector2(Math.sin(angle), Math.cos(angle));
 		this.texture = texture;
 		this.mesh = Meshes.Billboard;
 		

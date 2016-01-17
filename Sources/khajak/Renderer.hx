@@ -114,6 +114,7 @@ class Renderer {
 	function renderParticle(g4: Graphics, pipeline: BillboardPipeline, particle: Particle) {
 		g4.setVector2(pipeline.sizeID, particle.size);
 		g4.setVector3(pipeline.centerID, particle.position);
+		g4.setVector2(pipeline.rotDataID, particle.rotData);
 		g4.setMatrix(pipeline.mvpMatrixID, calculateMVP(particle.model));
 		
 		g4.setTexture(pipeline.textureUnit, particle.texture);

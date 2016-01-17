@@ -12,6 +12,7 @@ class Emitter {
 	
 	private var position: FastVector3;
 	private var radius: Float;
+	private var rotate: Bool;
 	private var direction: FastVector3;
 	private var spreadAngle: Float;
 	private var affectedByGravity: Bool;
@@ -41,9 +42,10 @@ class Emitter {
 		return particleCounts[currentBufferId];
 	}
 	
-	public function new(position: FastVector3, radius: Float, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speed: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int) {
+	public function new(position: FastVector3, radius: Float, rotate: Bool, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speed: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int) {
 		this.position = position;
 		this.radius = radius;
+		this.rotate = rotate;
 		this.direction = direction;
 		direction.normalize();
 		this.spreadAngle = spreadAngle;
@@ -113,7 +115,7 @@ class Emitter {
 		//var rotDirection = 
 		//var nextDirection = rotateAroundAxis(rotDirection, direction, getRandomValue(0, 2 * Math.PI);
 		
-		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(position, movement, affectedByGravity, timeToLive, size, texture);
+		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(position, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), movement, affectedByGravity, timeToLive, size, texture);
 		particleCounts[currentBufferId] ++;
 	}
 	
