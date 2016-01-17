@@ -37,7 +37,7 @@ class Particle {
 		timeToLive -= deltaTime;
 		
 		if (affectedByGravity) {
-			gravity.add(new FastVector3(0, -0.5 * 9.81 * deltaTime, 0));
+			gravity = gravity.add(new FastVector3(0, -0.5 * 9.81 * deltaTime, 0));
 		}
 		position = position.add(movement.add(gravity).mult(deltaTime));
 		model = FastMatrix4.translation(position.x, position.y, position.z);
