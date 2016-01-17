@@ -9,10 +9,13 @@ import kha.math.FastMatrix4;
 import kha.math.FastVector3;
 import kha.Shaders;
 import kha.System;
+import khajak.particles.Emitter;
+import khajak.particles.Particle;
 
 class Renderer {
 	
 	var basicPipeline: BasicPipeline;
+	var billboardPipeline: BillboardPipeline;
 	public var basicVertexStructure: VertexStructure;
 	
 	var view: FastMatrix4;
@@ -27,6 +30,7 @@ class Renderer {
 	public var light7: Light;
 	public var light8: Light;
 	public var objects: Array<RenderObject>;
+	public var particleEmitters: Array<Emitter>;
 	
 	public var clearColor: Color;
 	
@@ -41,6 +45,7 @@ class Renderer {
         basicVertexStructure.add("nor", VertexData.Float3);
 		
 		basicPipeline = new BasicPipeline(Shaders.basic_frag, Shaders.basic_vert, [ basicVertexStructure ]);
+		billboardPipeline = new BillboardPipeline(Shaders.billboard_frag, Shaders.billboard_vert, [ basicVertexStructure ]);
 		
 		updateCamera(new FastVector3(0, 0, -10), new FastVector3(0, 0, 0));
 		
@@ -55,6 +60,7 @@ class Renderer {
 		light7 = new Light(Color.White, 0, new FastVector3(0, 0, 0));
 		light8 = new Light(Color.White, 0, new FastVector3(0, 0, 0));
 		objects = new Array<RenderObject>();
+		particleEmitters = new Array<Emitter>();
 	}
 	
 	public static function init(renderer: Renderer) {
@@ -78,6 +84,14 @@ class Renderer {
 			renderObject(g4, basicPipeline, object);
 		}
 		
+		billboardPipeline.set(g4, view);
+		
+		for (emitter in particleEmitters) {
+			for (i in 0...emitter.particleCount) {
+				renderParticle(g4, billboardPipeline, emitter.particles[i]);
+			}
+		}
+		
         g4.end();
 		
 		// Render 2d gui
@@ -93,7 +107,7 @@ class Renderer {
 	function renderObject(g4: Graphics, pipeline: BasicPipeline, object: RenderObject) {
 		g4.setFloat3(pipeline.colorID, object.color.R, object.color.G, object.color.B);
 		g4.setMatrix(pipeline.modelMatrixID, object.model);
-		g4.setMatrix(pipeline.mvpMatrixID, calculateMVP(object));
+		g4.setMatrix(pipeline.mvpMatrixID, object.model);
 		
 		g4.setTexture(pipeline.textureUnit, object.texture);
 		
@@ -103,11 +117,24 @@ class Renderer {
 		g4.drawIndexedVertices();
 	}
 	
-	function calculateMVP(object: RenderObject) : FastMatrix4 {
+	function renderParticle(g4: Graphics, pipeline: BillboardPipeline, particle: Particle) {
+		g4.setVector2(pipeline.sizeID, particle.size);
+		g4.setVector3(pipeline.centerID, particle.position);
+		g4.setMatrix(pipeline.mvpMatrixID, particle.model);
+		
+		g4.setTexture(pipeline.textureUnit, particle.texture);
+		
+		g4.setVertexBuffer(particle.mesh.vertexBuffer);
+		g4.setIndexBuffer(particle.mesh.indexBuffer);
+		
+		g4.drawIndexedVertices();
+	}
+	
+	function calculateMVP(model: FastMatrix4) : FastMatrix4 {
 		var mvp : FastMatrix4 = FastMatrix4.identity();
 		mvp = mvp.multmat(projection);
 		mvp = mvp.multmat(view);
-		mvp = mvp.multmat(object.model);
+		mvp = mvp.multmat(model);
 		return mvp;
 	}
 }

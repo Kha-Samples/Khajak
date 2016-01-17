@@ -1,35 +1,44 @@
 package khajak.particles;
 import kha.Image;
-import kha.math.Vector3;
+import kha.math.FastMatrix4;
+import kha.math.FastVector2;
+import kha.math.FastVector3;
 
 class Particle {
 
-	private var position: Vector3;
-	private var movement: Vector3;
-	private var gravity: Vector3;
+	public var position: FastVector3;
+	private var movement: FastVector3;
+	private var gravity: FastVector3;
 	private var affectedByGravity: Bool;
 	
 	private var timeToLive: Float;
-	private var size: Float;
-	private var texture: Image;
+	public var size: FastVector2;
+	public var texture: Image;
+	public var mesh: Mesh;
 	
-	public function new(position: Vector3, movement: Vector3, affectedByGravity: Bool, timeToLive: Float, size: Float, texture: Image) {
+	public var model: FastMatrix4;
+	
+	public function new(position: FastVector3, movement: FastVector3, affectedByGravity: Bool, timeToLive: Float, size: FastVector2, texture: Image, mesh: Mesh) {
 		this.position = position;
 		this.movement = movement;
-		this.gravity = new Vector3(0, 0, 0);
+		this.gravity = new FastVector3(0, 0, 0);
 		this.affectedByGravity = affectedByGravity;
 		this.timeToLive = timeToLive;
 		this.size = size;
 		this.texture = texture;
+		this.mesh = mesh;
+		
+		model = FastMatrix4.translation(position.x, position.y, position.z);
 	}
 	
 	public function update(deltaTime: Float): Bool {
 		timeToLive -= deltaTime;
 		
 		if (affectedByGravity) {
-			gravity.add(new Vector3(0, -0.5 * 9.81 * deltaTime, 0));
+			gravity.add(new FastVector3(0, -0.5 * 9.81 * deltaTime, 0));
 		}
 		position = position.add(movement.add(gravity).mult(deltaTime));
+		model = FastMatrix4.translation(position.x, position.y, position.z);
 		
 		return timeToLive >= 0;
 	}
