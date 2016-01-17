@@ -3,6 +3,7 @@ import kha.Image;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
 import kha.math.Vector2;
+import kha.math.Vector3;
 import khajak.Mesh;
 
 class Emitter {
@@ -19,7 +20,6 @@ class Emitter {
 	private var speed: Vector2;
 	private var size: Array<FastVector2>;
 	private var texture: Image;
-	private var mesh: Mesh;
 	
 	private var rateMin: Float;
 	private var rateMax: Float;
@@ -41,7 +41,7 @@ class Emitter {
 		return particleCounts[currentBufferId];
 	}
 	
-	public function new(position: FastVector3, radius: Float, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speed: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int, mesh: Mesh) {
+	public function new(position: FastVector3, radius: Float, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speed: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int) {
 		this.position = position;
 		this.radius = radius;
 		this.direction = direction;
@@ -52,7 +52,6 @@ class Emitter {
 		this.speed = speed;
 		this.size = [ sizeMin, sizeMax ];
 		this.texture = texture;
-		this.mesh = mesh;
 		this.rateMin = rateMin;
 		this.rateMax = rateMax;
 		rateNext = getRandomValue(rateMin, rateMax);
@@ -108,12 +107,19 @@ class Emitter {
 		var size = getRandomVectorValueInRange(this.size);
 		
 		var movement = direction.mult(speed);
-		// TODO: spreadAngle
 		//var offsetVector = new FastVector3(0, 1, 0);
 		//var position = this.position.add(offsetVector.mult(getRandomValue(0, this.range));
+		//var nextAngle = getRandomValue(0, spreadAngle);
+		//var rotDirection = 
+		//var nextDirection = rotateAroundAxis(rotDirection, direction, getRandomValue(0, 2 * Math.PI);
 		
-		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(position, movement, affectedByGravity, timeToLive, size, texture, mesh);
+		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(position, movement, affectedByGravity, timeToLive, size, texture);
 		particleCounts[currentBufferId] ++;
+	}
+	
+	private function rotateAroundAxis(vector: Vector3, normalizedAxis: Vector3, angle: Float) : Vector3 {
+		// Direction has to be normalized!
+		return vector.mult(Math.cos(angle)).add((normalizedAxis.cross(vector)).mult(Math.sin(angle))).add(normalizedAxis.mult(normalizedAxis.dot(vector)).mult(1 - Math.cos(angle)));
 	}
 	
 	private inline function getRandomValue(min: Float, max: Float): Float {

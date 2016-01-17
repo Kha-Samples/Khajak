@@ -18,7 +18,7 @@ class Particle {
 	
 	public var model: FastMatrix4;
 	
-	public function new(position: FastVector3, movement: FastVector3, affectedByGravity: Bool, timeToLive: Float, size: FastVector2, texture: Image, mesh: Mesh) {
+	public function new(position: FastVector3, movement: FastVector3, affectedByGravity: Bool, timeToLive: Float, size: FastVector2, texture: Image) {
 		this.position = position;
 		this.movement = movement;
 		this.gravity = new FastVector3(0, 0, 0);
@@ -26,7 +26,7 @@ class Particle {
 		this.timeToLive = timeToLive;
 		this.size = size;
 		this.texture = texture;
-		this.mesh = mesh;
+		this.mesh = Meshes.Billboard;
 		
 		model = FastMatrix4.translation(position.x, position.y, position.z);
 	}

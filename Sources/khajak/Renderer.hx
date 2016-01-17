@@ -16,7 +16,6 @@ class Renderer {
 	
 	var basicPipeline: BasicPipeline;
 	var billboardPipeline: BillboardPipeline;
-	public var basicVertexStructure: VertexStructure;
 	
 	var view: FastMatrix4;
 	var projection: FastMatrix4;
@@ -39,13 +38,8 @@ class Renderer {
 	public function new(clearColor: Color) {
 		this.clearColor = clearColor;
 		
-		basicVertexStructure = new VertexStructure();
-        basicVertexStructure.add("pos", VertexData.Float3);
-        basicVertexStructure.add("uv", VertexData.Float2);
-        basicVertexStructure.add("nor", VertexData.Float3);
-		
-		basicPipeline = new BasicPipeline(Shaders.basic_frag, Shaders.basic_vert, [ basicVertexStructure ]);
-		billboardPipeline = new BillboardPipeline(Shaders.billboard_frag, Shaders.billboard_vert, [ basicVertexStructure ]);
+		basicPipeline = new BasicPipeline(Shaders.basic_frag, Shaders.basic_vert, [ VertexStructures.Basic ]);
+		billboardPipeline = new BillboardPipeline(Shaders.billboard_frag, Shaders.billboard_vert, [ VertexStructures.Billboards ]);
 		
 		updateCamera(new FastVector3(0, 0, -10), new FastVector3(0, 0, 0));
 		

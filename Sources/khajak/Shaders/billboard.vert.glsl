@@ -4,7 +4,6 @@ precision highp float;
 
 attribute vec3 pos;
 attribute vec2 uv;
-attribute vec3 nor;
 
 varying vec2 vUV;
 

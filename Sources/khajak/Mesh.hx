@@ -9,14 +9,10 @@ class Mesh {
 	public var vertexBuffer: VertexBuffer;
 	public var indexBuffer: IndexBuffer;
 
-	public function new(objData: String) {
-		var obj = new ObjLoader(objData);
-		var data = obj.data;
-		var indices = obj.indices;
-		
+	public function new(data: Array<Float>, indices: Array<Int>, vertexStructure: VertexStructure) {
 		vertexBuffer = new VertexBuffer(
-		  Std.int(data.length / Renderer.the.basicVertexStructure.byteSize()),
-		  Renderer.the.basicVertexStructure,
+		  Std.int(data.length / vertexStructure.byteSize()),
+		  vertexStructure,
 		  Usage.StaticUsage
 		);
 		
@@ -36,5 +32,10 @@ class Mesh {
 		  iData[i] = indices[i];
 		}
 		indexBuffer.unlock();
+	}
+	
+	public static function FromModel(objData: String): Mesh {
+		var obj = new ObjLoader(objData);
+		return new Mesh(obj.data, obj.indices, VertexStructures.Basic);
 	}
 }
