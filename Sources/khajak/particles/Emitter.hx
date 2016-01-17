@@ -108,14 +108,16 @@ class Emitter {
 		var timeToLive = getRandomValueInRange(this.timeToLive);
 		var size = getRandomVectorValueInRange(this.size);
 		
-		var movement = direction.mult(speed);
-		//var offsetVector = new FastVector3(0, 1, 0);
-		//var position = this.position.add(offsetVector.mult(getRandomValue(0, this.range));
-		//var nextAngle = getRandomValue(0, spreadAngle);
-		//var rotDirection = 
-		//var nextDirection = rotateAroundAxis(rotDirection, direction, getRandomValue(0, 2 * Math.PI);
+		var orthoVector = direction.cross(new FastVector3(0, 0, 1));
+		orthoVector.normalize();
+		var nextPosition = position.add(orthoVector.mult(getRandomValue(0, radius)));
 		
-		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(position, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), movement, affectedByGravity, timeToLive, size, texture);
+		var nextAngle = getRandomValue(-spreadAngle, spreadAngle);
+		var nextDirection = direction.add(orthoVector.mult(Math.tan(nextAngle)));
+		nextDirection.normalize();
+		var movement = nextDirection.mult(speed);
+		
+		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(nextPosition, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), movement, affectedByGravity, timeToLive, size, texture);
 		particleCounts[currentBufferId] ++;
 	}
 	
