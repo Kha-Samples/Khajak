@@ -28,7 +28,7 @@ class BillboardPipeline {
 		pipeline.fragmentShader = fragmentShader;
 		pipeline.vertexShader = vertexShader;
 		pipeline.inputLayout = inputLayout;
-		pipeline.depthWrite = true;
+		pipeline.depthWrite = false; // Particles usually have transparent parts, so they should not cover each other
 		pipeline.depthMode = CompareMode.Less;
 		pipeline.cullMode = CullMode.CounterClockwise;
 		pipeline.blendSource = BlendingOperation.SourceAlpha;

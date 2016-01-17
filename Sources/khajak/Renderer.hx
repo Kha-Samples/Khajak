@@ -107,7 +107,7 @@ class Renderer {
 	function renderObject(g4: Graphics, pipeline: BasicPipeline, object: RenderObject) {
 		g4.setFloat3(pipeline.colorID, object.color.R, object.color.G, object.color.B);
 		g4.setMatrix(pipeline.modelMatrixID, object.model);
-		g4.setMatrix(pipeline.mvpMatrixID, object.model);
+		g4.setMatrix(pipeline.mvpMatrixID, calculateMVP(object.model));
 		
 		g4.setTexture(pipeline.textureUnit, object.texture);
 		
@@ -120,7 +120,7 @@ class Renderer {
 	function renderParticle(g4: Graphics, pipeline: BillboardPipeline, particle: Particle) {
 		g4.setVector2(pipeline.sizeID, particle.size);
 		g4.setVector3(pipeline.centerID, particle.position);
-		g4.setMatrix(pipeline.mvpMatrixID, particle.model);
+		g4.setMatrix(pipeline.mvpMatrixID, calculateMVP(particle.model));
 		
 		g4.setTexture(pipeline.textureUnit, particle.texture);
 		
