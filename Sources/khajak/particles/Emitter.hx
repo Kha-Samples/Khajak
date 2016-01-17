@@ -2,8 +2,10 @@ package khajak.particles;
 import kha.Image;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
+import kha.math.Random;
 import kha.math.Vector2;
 import kha.math.Vector3;
+import kha.Scheduler;
 import khajak.Mesh;
 
 class Emitter {
@@ -18,7 +20,8 @@ class Emitter {
 	private var affectedByGravity: Bool;
 	
 	private var timeToLive: Vector2;
-	private var speed: Vector2;
+	private var speedStart: Vector2;
+	private var speedEnd: Vector2;
 	private var size: Array<FastVector2>;
 	private var texture: Image;
 	
@@ -42,7 +45,11 @@ class Emitter {
 		return particleCounts[currentBufferId];
 	}
 	
-	public function new(position: FastVector3, radius: Float, rotate: Bool, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speed: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int) {
+	static var random: Random;
+	
+	public function new(position: FastVector3, radius: Float, rotate: Bool, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speedStart: Vector2, speedEnd: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int) {
+		if (random == null) random = new Random(Std.int(Scheduler.realTime() * 1000000));
+		
 		this.position = position;
 		this.radius = radius;
 		this.rotate = rotate;
@@ -51,7 +58,8 @@ class Emitter {
 		this.spreadAngle = spreadAngle;
 		this.affectedByGravity = affectedByGravity;
 		this.timeToLive = timeToLive;
-		this.speed = speed;
+		this.speedStart = speedStart;
+		this.speedEnd = speedEnd;
 		this.size = [ sizeMin, sizeMax ];
 		this.texture = texture;
 		this.rateMin = rateMin;
@@ -104,7 +112,8 @@ class Emitter {
 	}
 	
 	private function emitParticle() {
-		var speed = getRandomValueInRange(this.speed);
+		var nextSpeedStart = getRandomValueInRange(speedStart);
+		var nextSpeedEnd = getRandomValueInRange(speedEnd);
 		var timeToLive = getRandomValueInRange(this.timeToLive);
 		var size = getRandomVectorValueInRange(this.size);
 		
@@ -115,9 +124,8 @@ class Emitter {
 		var nextAngle = getRandomValue(-spreadAngle, spreadAngle);
 		var nextDirection = direction.add(orthoVector.mult(Math.tan(nextAngle)));
 		nextDirection.normalize();
-		var movement = nextDirection.mult(speed);
 		
-		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(nextPosition, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), movement, affectedByGravity, timeToLive, size, texture);
+		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(nextPosition, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), nextDirection, nextSpeedStart, nextSpeedEnd, affectedByGravity, timeToLive, size, texture);
 		particleCounts[currentBufferId] ++;
 	}
 	
@@ -127,7 +135,7 @@ class Emitter {
 	}
 	
 	private inline function getRandomValue(min: Float, max: Float): Float {
-		return min + Math.random() * (max - min);
+		return min + random.GetFloat() * (max - min);
 	}
 	
 	private inline function getRandomValueInRange(range: Vector2): Float {
@@ -135,6 +143,6 @@ class Emitter {
 	}
 	
 	private inline function getRandomVectorValueInRange(range: Array<FastVector2>): FastVector2 {
-		return new FastVector2(range[0].x + Math.random() * (range[1].x - range[0].x), range[0].y + Math.random() * (range[1].y - range[0].y));
+		return new FastVector2(range[0].x + random.GetFloat() * (range[1].x - range[0].x), range[0].y + random.GetFloat() * (range[1].y - range[0].y));
 	}
 }
