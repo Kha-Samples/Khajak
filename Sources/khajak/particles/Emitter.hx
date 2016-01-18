@@ -1,4 +1,5 @@
 package khajak.particles;
+import kha.Color;
 import kha.Image;
 import kha.math.FastVector2;
 import kha.math.FastVector3;
@@ -125,7 +126,7 @@ class Emitter {
 		var nextDirection = direction.add(orthoVector.mult(Math.tan(nextAngle)));
 		nextDirection.normalize();
 		
-		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(nextPosition, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), nextDirection, nextSpeedStart, nextSpeedEnd, affectedByGravity, timeToLive, size, texture);
+		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(nextPosition, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), nextDirection, nextSpeedStart, nextSpeedEnd, affectedByGravity, timeToLive, size, Color.Magenta, texture);
 		particleCounts[currentBufferId] ++;
 	}
 	

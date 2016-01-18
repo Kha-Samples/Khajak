@@ -1,4 +1,5 @@
 package khajak.particles;
+import kha.Color;
 import kha.Image;
 import kha.math.FastMatrix4;
 import kha.math.FastVector2;
@@ -18,12 +19,13 @@ class Particle {
 	private var timeToLiveOverall: Float;
 	public var size: FastVector2;
 	public var rotData: FastVector2;
+	public var color: Color;
 	public var texture: Image;
 	public var mesh: Mesh;
 	
 	public var model: FastMatrix4;
 	
-	public function new(position: FastVector3, angle: Float, direction: FastVector3, speedStart: Float, speedEnd: Float, affectedByGravity: Bool, timeToLive: Float, size: FastVector2, texture: Image) {
+	public function new(position: FastVector3, angle: Float, direction: FastVector3, speedStart: Float, speedEnd: Float, affectedByGravity: Bool, timeToLive: Float, size: FastVector2, color: Color, texture: Image) {
 		this.position = position;
 		this.direction = direction;
 		this.speedStart = speedStart;
@@ -34,6 +36,7 @@ class Particle {
 		timeToLiveOverall = timeToLive;
 		this.size = size;
 		this.rotData = new FastVector2(Math.sin(angle), Math.cos(angle));
+		this.color = color;
 		this.texture = texture;
 		this.mesh = Meshes.Billboard;
 		

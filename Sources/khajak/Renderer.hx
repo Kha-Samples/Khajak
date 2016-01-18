@@ -112,6 +112,7 @@ class Renderer {
 	}
 	
 	function renderParticle(g4: Graphics, pipeline: BillboardPipeline, particle: Particle) {
+		g4.setFloat4(pipeline.baseColorID, particle.color.R, particle.color.G, particle.color.B, particle.color.A);
 		g4.setVector2(pipeline.sizeID, particle.size);
 		g4.setVector3(pipeline.centerID, particle.position);
 		g4.setVector2(pipeline.rotDataID, particle.rotData);

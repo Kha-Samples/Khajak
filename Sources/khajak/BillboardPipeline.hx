@@ -19,6 +19,7 @@ class BillboardPipeline {
 	
 	public var viewMatrixID: ConstantLocation;
 	
+	public var baseColorID: ConstantLocation;
 	public var centerID: ConstantLocation;
 	public var sizeID: ConstantLocation;
 	public var rotDataID: ConstantLocation;
@@ -40,6 +41,7 @@ class BillboardPipeline {
 		
 		viewMatrixID = pipeline.getConstantLocation("viewMatrix");
 		
+		baseColorID = pipeline.getConstantLocation("baseColor");
 		centerID = pipeline.getConstantLocation("centerWorldspace");
 		sizeID = pipeline.getConstantLocation("sizeWorldspace");
 		rotDataID = pipeline.getConstantLocation("rotData");

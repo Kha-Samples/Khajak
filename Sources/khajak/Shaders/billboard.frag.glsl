@@ -4,8 +4,9 @@ precision mediump float;
 
 varying vec2 vUV;
 
+uniform vec4 baseColor;
 uniform sampler2D texture;
 
 void kore() {  
-	gl_FragColor = vec4(texture2D(texture, vUV).rgba);
+	gl_FragColor = baseColor * vec4(texture2D(texture, vUV).rgba);
 }
