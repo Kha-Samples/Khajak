@@ -15,21 +15,33 @@ class Emitter {
 	
 	private var position: FastVector3;
 	private var radius: Float;
-	private var rotate: Bool;
 	private var direction: FastVector3;
 	private var spreadAngle: Float;
-	private var affectedByGravity: Bool;
+	private var gravity: Float;
+	private var timeToLiveMin: Float;
+	private var timeToLiveMax: Float;
+	private var sizeMin: FastVector2;
+	private var sizeMax: FastVector2;
 	
-	private var timeToLive: Vector2;
-	private var speedStart: Vector2;
-	private var speedEnd: Vector2;
-	private var size: Array<FastVector2>;
-	private var texture: Image;
+	private var rotationStartMin: Float;
+	private var rotationStartMax: Float;
+	private var rotationEndMin: Float;
+	private var rotationEndMax: Float;
+	private var speedStartMin: Float;
+	private var speedStartMax: Float;
+	private var speedEndMin: Float;
+	private var speedEndMax: Float;
+	private var colorStartMin: Color;
+	private var colorStartMax: Color;
+	private var colorEndMin: Color;
+	private var colorEndMax: Color;
 	
 	private var rateMin: Float;
 	private var rateMax: Float;
 	private var rateNext: Float;
 	private var maxCount: Int;
+	private var texture: Image;
+	
 	private var sinceLastEmission: Float;
 	private var remainingTime: Float;
 	
@@ -48,25 +60,38 @@ class Emitter {
 	
 	static var random: Random;
 	
-	public function new(position: FastVector3, radius: Float, rotate: Bool, direction: FastVector3, spreadAngle: Float, affectedByGravity: Bool, timeToLive: Vector2, speedStart: Vector2, speedEnd: Vector2, sizeMin: FastVector2, sizeMax: FastVector2, texture: Image, rateMin: Float, rateMax: Float, maxCount: Int) {
+	public function new(position: FastVector3, radius: Float, direction: FastVector3, spreadAngle: Float, gravity: Float, timeToLiveMin: Float, timeToLiveMax: Float, sizeMin: FastVector2, sizeMax: FastVector2, rotationStartMin: Float, rotationStartMax: Float, rotationEndMin: Float, rotationEndMax: Float, speedStartMin: Float, speedStartMax: Float, speedEndMin: Float, speedEndMax: Float, colorStartMin: Color, colorStartMax: Color, colorEndMin: Color, colorEndMax: Color, rateMin: Float, rateMax: Float, maxCount: Int, texture: Image) {
 		if (random == null) random = new Random(Std.int(Scheduler.realTime() * 1000000));
 		
 		this.position = position;
 		this.radius = radius;
-		this.rotate = rotate;
 		this.direction = direction;
 		direction.normalize();
 		this.spreadAngle = spreadAngle;
-		this.affectedByGravity = affectedByGravity;
-		this.timeToLive = timeToLive;
-		this.speedStart = speedStart;
-		this.speedEnd = speedEnd;
-		this.size = [ sizeMin, sizeMax ];
-		this.texture = texture;
+		this.gravity = gravity;
+		this.timeToLiveMin = timeToLiveMin;
+		this.timeToLiveMax = timeToLiveMax;
+		this.sizeMin = sizeMin;
+		this.sizeMax = sizeMax;
+		
+		this.rotationStartMin = rotationStartMin;
+		this.rotationStartMax = rotationStartMax;
+		this.rotationEndMin = rotationEndMin;
+		this.rotationEndMax = rotationEndMax;
+		this.speedStartMin = speedStartMin;
+		this.speedStartMax = speedStartMax;
+		this.speedEndMin = speedEndMin;
+		this.speedEndMax = speedEndMax;
+		this.colorStartMin = colorStartMin;
+		this.colorStartMax = colorStartMax;
+		this.colorEndMin = colorEndMin;
+		this.colorEndMax = colorEndMax;
+		
 		this.rateMin = rateMin;
 		this.rateMax = rateMax;
 		rateNext = getRandomValue(rateMin, rateMax);
 		this.maxCount = maxCount;
+		this.texture = texture;
 		
 		particleBuffers = [ new Array<Particle>(), new Array<Particle>() ];
 		particleBuffers[0][maxCount - 1] = null;
@@ -113,11 +138,6 @@ class Emitter {
 	}
 	
 	private function emitParticle() {
-		var nextSpeedStart = getRandomValueInRange(speedStart);
-		var nextSpeedEnd = getRandomValueInRange(speedEnd);
-		var timeToLive = getRandomValueInRange(this.timeToLive);
-		var size = getRandomVectorValueInRange(this.size);
-		
 		var orthoVector = direction.cross(new FastVector3(0, 0, 1));
 		orthoVector.normalize();
 		var nextPosition = position.add(orthoVector.mult(getRandomValue(0, radius)));
@@ -126,7 +146,16 @@ class Emitter {
 		var nextDirection = direction.add(orthoVector.mult(Math.tan(nextAngle)));
 		nextDirection.normalize();
 		
-		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(nextPosition, (rotate ? getRandomValue(0, 2 * Math.PI) : 0), nextDirection, nextSpeedStart, nextSpeedEnd, affectedByGravity, timeToLive, size, Color.Magenta, texture);
+		var nextTimeToLive = getRandomValue(timeToLiveMin, timeToLiveMax);
+		var nextSize = getRandomVectorValue(sizeMin, sizeMax);
+		var nextRotationStart = getRandomValue(rotationStartMin, rotationStartMax);
+		var nextRotationEnd = getRandomValue(rotationEndMin, rotationEndMax);
+		var nextSpeedStart = getRandomValue(speedStartMin, speedStartMax);
+		var nextSpeedEnd = getRandomValue(speedEndMin, speedEndMax);
+		var nextColorStart = getRandomColorValue(colorStartMin, colorStartMax);
+		var nextColorEnd = getRandomColorValue(colorEndMin, colorEndMax);
+		
+		particleBuffers[currentBufferId][particleCounts[currentBufferId]] = new Particle(nextPosition, nextDirection, gravity, nextTimeToLive, nextSize, nextRotationStart, nextRotationEnd, nextSpeedStart, nextSpeedEnd, nextColorStart, nextColorEnd, texture);
 		particleCounts[currentBufferId] ++;
 	}
 	
@@ -143,7 +172,11 @@ class Emitter {
 		return getRandomValue(range.x, range.y);
 	}
 	
-	private inline function getRandomVectorValueInRange(range: Array<FastVector2>): FastVector2 {
-		return new FastVector2(range[0].x + random.GetFloat() * (range[1].x - range[0].x), range[0].y + random.GetFloat() * (range[1].y - range[0].y));
+	private inline function getRandomVectorValue(min: FastVector2, max: FastVector2): FastVector2 {
+		return new FastVector2(min.x + random.GetFloat() * (max.x - min.x), min.y + random.GetFloat() * (max.y - min.y));
+	}
+	
+	private inline function getRandomColorValue(min: Color, max: Color): Color {
+		return Color.fromFloats(getRandomValue(min.R, max.R), getRandomValue(min.G, max.G), getRandomValue(min.B, max.B));
 	}
 }
