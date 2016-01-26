@@ -144,6 +144,7 @@ class Emitter {
 		
 		var nextAngle = getRandomValue(-spreadAngle, spreadAngle);
 		var nextDirection = direction.add(orthoVector.mult(Math.tan(nextAngle)));
+		nextDirection = rotateAroundAxis(nextDirection, direction, getRandomValue(0, 2 * Math.PI));
 		nextDirection.normalize();
 		
 		var nextTimeToLive = getRandomValue(timeToLiveMin, timeToLiveMax);
@@ -159,8 +160,7 @@ class Emitter {
 		particleCounts[currentBufferId] ++;
 	}
 	
-	private function rotateAroundAxis(vector: Vector3, normalizedAxis: Vector3, angle: Float) : Vector3 {
-		// Direction has to be normalized!
+	private function rotateAroundAxis(vector: FastVector3, normalizedAxis: FastVector3, angle: Float) : FastVector3 {
 		return vector.mult(Math.cos(angle)).add((normalizedAxis.cross(vector)).mult(Math.sin(angle))).add(normalizedAxis.mult(normalizedAxis.dot(vector)).mult(1 - Math.cos(angle)));
 	}
 	
