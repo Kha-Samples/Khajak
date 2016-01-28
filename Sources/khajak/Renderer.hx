@@ -107,6 +107,7 @@ class Renderer {
 			var i = 0;
 			for (emitter in particleEmitters) {
 				
+				// TODO: This fails if any emitter has more particles than fit into a single batch
 				if (i + emitter.particleCount > PARTICLE_BATCH_SIZE) {
 					// Render current batch
 					actuallyRenderParticlesInstanced(g4, i);
