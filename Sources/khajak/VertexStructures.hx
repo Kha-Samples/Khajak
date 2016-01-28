@@ -28,4 +28,19 @@ class VertexStructures {
 		
 		return billboards;
 	}
+	
+	static var billboardsInstanced: VertexStructure;
+	public static var BillboardsInstanced(get, null): VertexStructure;
+	static function get_BillboardsInstanced() {
+		if (billboardsInstanced == null) {
+			billboardsInstanced = new VertexStructure();
+			billboardsInstanced.add("sizeWorldspace", VertexData.Float2);
+			billboardsInstanced.add("centerWorldspace", VertexData.Float3);
+			billboardsInstanced.add("rotData", VertexData.Float2);
+			billboardsInstanced.add("baseColor", VertexData.Float4);
+			billboardsInstanced.add("mvpMatrix", VertexData.Float4x4);
+		}
+		
+		return billboardsInstanced;
+	}
 }
