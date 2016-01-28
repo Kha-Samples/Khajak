@@ -19,7 +19,7 @@ import khajak.particles.Particle;
 
 class Renderer {
 	
-	public static var PARTICLE_BATCH_SIZE : Int = 512;
+	public static var PARTICLE_BATCH_SIZE : Int = 256;
 	
 	var basicPipeline: BasicPipeline;
 	var billboardPipeline: BillboardPipeline;
@@ -105,19 +105,17 @@ class Renderer {
 			
 			var bufferData = vertexBuffersBillboardInstanced[1].lock();
 			var i = 0;
-			for (emitter in particleEmitters) {
-				
-				// TODO: This fails if any emitter has more particles than fit into a single batch
-				if (i + emitter.particleCount > PARTICLE_BATCH_SIZE) {
-					// Render current batch
-					actuallyRenderParticlesInstanced(g4, i);
-					
-					// Prepare for next batch
-					bufferData = vertexBuffersBillboardInstanced[1].lock();
-					i = 0;
-				}
-				
+			for (emitter in particleEmitters) {				
 				for (pi in 0...emitter.particleCount) {
+					if (i == PARTICLE_BATCH_SIZE) {
+						// Render current batch
+						actuallyRenderParticlesInstanced(g4, i);
+						
+						// Prepare for next batch
+						bufferData = vertexBuffersBillboardInstanced[1].lock();
+						i = 0;
+					}
+					
 					addParticleToInstanceBuffers(emitter.particles[pi], bufferData, i);
 					i++;
 				}
