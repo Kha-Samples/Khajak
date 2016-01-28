@@ -7,14 +7,14 @@ import kha.math.Random;
 import kha.math.Vector2;
 import kha.math.Vector3;
 import kha.Scheduler;
-import khajak.Mesh;
 
 class Emitter {
 
 	private var active: Bool;
 	
 	private var position: FastVector3;
-	private var radius: Float;
+	private var radiusMin: Float;
+	private var radiusMax: Float;
 	private var direction: FastVector3;
 	private var spreadAngle: Float;
 	private var gravity: Float;
@@ -60,11 +60,12 @@ class Emitter {
 	
 	static var random: Random;
 	
-	public function new(position: FastVector3, radius: Float, direction: FastVector3, spreadAngle: Float, gravity: Float, timeToLiveMin: Float, timeToLiveMax: Float, sizeMin: FastVector2, sizeMax: FastVector2, rotationStartMin: Float, rotationStartMax: Float, rotationEndMin: Float, rotationEndMax: Float, speedStartMin: Float, speedStartMax: Float, speedEndMin: Float, speedEndMax: Float, colorStartMin: Color, colorStartMax: Color, colorEndMin: Color, colorEndMax: Color, rateMin: Float, rateMax: Float, maxCount: Int, texture: Image) {
+	public function new(position: FastVector3, radiusMin: Float, radiusMax: Float, direction: FastVector3, spreadAngle: Float, gravity: Float, timeToLiveMin: Float, timeToLiveMax: Float, sizeMin: FastVector2, sizeMax: FastVector2, rotationStartMin: Float, rotationStartMax: Float, rotationEndMin: Float, rotationEndMax: Float, speedStartMin: Float, speedStartMax: Float, speedEndMin: Float, speedEndMax: Float, colorStartMin: Color, colorStartMax: Color, colorEndMin: Color, colorEndMax: Color, rateMin: Float, rateMax: Float, maxCount: Int, texture: Image) {
 		if (random == null) random = new Random(Std.int(Scheduler.realTime() * 1000000));
 		
 		this.position = position;
-		this.radius = radius;
+		this.radiusMin = radiusMin;
+		this.radiusMax = radiusMax;
 		this.direction = direction;
 		direction.normalize();
 		this.spreadAngle = spreadAngle;
@@ -105,6 +106,12 @@ class Emitter {
 		sinceLastEmission = rateNext;
 	}
 	
+	public function burst() {
+		while (particleCounts[currentBufferId] < maxCount) {
+			emitParticle();
+		}
+	}
+	
 	public function stop() {
 		active = false;
 	}
@@ -139,8 +146,9 @@ class Emitter {
 	
 	private function emitParticle() {
 		var orthoVector = direction.cross(new FastVector3(0, 0, 1));
+		orthoVector = rotateAroundAxis(orthoVector, direction, getRandomValue(0, 2 * Math.PI));
 		orthoVector.normalize();
-		var nextPosition = position.add(orthoVector.mult(getRandomValue(0, radius)));
+		var nextPosition = position.add(orthoVector.mult(getRandomValue(radiusMin, radiusMax)));
 		
 		var nextAngle = getRandomValue(-spreadAngle, spreadAngle);
 		var nextDirection = direction.add(orthoVector.mult(Math.tan(nextAngle)));
@@ -161,6 +169,7 @@ class Emitter {
 	}
 	
 	private function rotateAroundAxis(vector: FastVector3, normalizedAxis: FastVector3, angle: Float) : FastVector3 {
+		// Direction has to be normalized!
 		return vector.mult(Math.cos(angle)).add((normalizedAxis.cross(vector)).mult(Math.sin(angle))).add(normalizedAxis.mult(normalizedAxis.dot(vector)).mult(1 - Math.cos(angle)));
 	}
 	
