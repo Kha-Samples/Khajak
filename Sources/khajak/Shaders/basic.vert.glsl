@@ -44,10 +44,10 @@ varying vec3 lightDirectionCameraspace1;
 varying vec3 lightDirectionCameraspace2;
 varying vec3 lightDirectionCameraspace3;
 varying vec3 lightDirectionCameraspace4;
-varying vec3 lightDirectionCameraspace5;
+/*varying vec3 lightDirectionCameraspace5;
 varying vec3 lightDirectionCameraspace6;
 varying vec3 lightDirectionCameraspace7;
-varying vec3 lightDirectionCameraspace8;
+varying vec3 lightDirectionCameraspace8;*/
 varying vec4 fragmentColor;
 
 void kore() {
@@ -70,14 +70,14 @@ void kore() {
 	lightDirectionCameraspace3 = lightPositionCameraspace3 + eyeDirectionCameraspace;
 	vec3 lightPositionCameraspace4 = (viewMatrix * vec4(light4Position, 1.0)).xyz;
 	lightDirectionCameraspace4 = lightPositionCameraspace4 + eyeDirectionCameraspace;
-	vec3 lightPositionCameraspace5 = (viewMatrix * vec4(light5Position, 1.0)).xyz;
+	/*vec3 lightPositionCameraspace5 = (viewMatrix * vec4(light5Position, 1.0)).xyz;
 	lightDirectionCameraspace5 = lightPositionCameraspace5 + eyeDirectionCameraspace;
 	vec3 lightPositionCameraspace6 = (viewMatrix * vec4(light6Position, 1.0)).xyz;
 	lightDirectionCameraspace6 = lightPositionCameraspace6 + eyeDirectionCameraspace;
 	vec3 lightPositionCameraspace7 = (viewMatrix * vec4(light7Position, 1.0)).xyz;
 	lightDirectionCameraspace7 = lightPositionCameraspace7 + eyeDirectionCameraspace;
 	vec3 lightPositionCameraspace8 = (viewMatrix * vec4(light8Position, 1.0)).xyz;
-	lightDirectionCameraspace8 = lightPositionCameraspace8 + eyeDirectionCameraspace;
+	lightDirectionCameraspace8 = lightPositionCameraspace8 + eyeDirectionCameraspace;*/
 	
 	// Normal of the the vertex, in camera space
 	normalCameraspace = (viewMatrix * modelMatrix * vec4(nor, 0.0)).xyz; // Only correct if modelMatrix does not scale the model! Use its inverse transpose if not.

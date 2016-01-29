@@ -10,10 +10,10 @@ varying vec3 lightDirectionCameraspace1;
 varying vec3 lightDirectionCameraspace2;
 varying vec3 lightDirectionCameraspace3;
 varying vec3 lightDirectionCameraspace4;
-varying vec3 lightDirectionCameraspace5;
+/*varying vec3 lightDirectionCameraspace5;
 varying vec3 lightDirectionCameraspace6;
 varying vec3 lightDirectionCameraspace7;
-varying vec3 lightDirectionCameraspace8;
+varying vec3 lightDirectionCameraspace8;*/
 varying vec4 fragmentColor;
 
 uniform sampler2D texture;
@@ -53,11 +53,11 @@ void kore() {
 	calculateLight(light1Color, light1Power, light1Position, lightDirectionCameraspace1, materialDiffuseColor, materialSpecularColor) +
 	calculateLight(light2Color, light2Power, light2Position, lightDirectionCameraspace2, materialDiffuseColor, materialSpecularColor) +
 	calculateLight(light3Color, light3Power, light3Position, lightDirectionCameraspace3, materialDiffuseColor, materialSpecularColor) +
-	calculateLight(light4Color, light4Power, light4Position, lightDirectionCameraspace4, materialDiffuseColor, materialSpecularColor) +
-	calculateLight(light5Color, light5Power, light5Position, lightDirectionCameraspace5, materialDiffuseColor, materialSpecularColor) +
+	calculateLight(light4Color, light4Power, light4Position, lightDirectionCameraspace4, materialDiffuseColor, materialSpecularColor);
+	/*calculateLight(light5Color, light5Power, light5Position, lightDirectionCameraspace5, materialDiffuseColor, materialSpecularColor) +
 	calculateLight(light6Color, light6Power, light6Position, lightDirectionCameraspace6, materialDiffuseColor, materialSpecularColor) +
 	calculateLight(light7Color, light7Power, light7Position, lightDirectionCameraspace7, materialDiffuseColor, materialSpecularColor) +
-	calculateLight(light8Color, light8Power, light8Position, lightDirectionCameraspace8, materialDiffuseColor, materialSpecularColor);
+	calculateLight(light8Color, light8Power, light8Position, lightDirectionCameraspace8, materialDiffuseColor, materialSpecularColor);*/
 
 	gl_FragColor = vec4(result, fragmentColor.a);
 }
