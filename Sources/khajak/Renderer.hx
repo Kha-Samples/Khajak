@@ -28,6 +28,7 @@ class Renderer {
 	
 	var view: FastMatrix4;
 	var projection: FastMatrix4;
+	var splitscreenCount: Int;
 	
 	public var light1: Light;
 	public var light2: Light;
@@ -58,9 +59,8 @@ class Renderer {
 			1 // changed after every instance, use i higher number for repetitions
 		);
 		
+		setSplitscreenMode(1);
 		updateCamera(new FastVector3(0, 0, -10), new FastVector3(0, 0, 0));
-		
-		projection = FastMatrix4.perspectiveProjection(45.0, System.pixelWidth / System.pixelHeight, 0.1, 100.0);
 		
 		light1 = new Light(Color.White, 0, new FastVector3(0, 0, 0));
 		light2 = new Light(Color.White, 0, new FastVector3(0, 0, 0));
@@ -78,15 +78,24 @@ class Renderer {
 		the = renderer;
 	}
 	
+	public function setSplitscreenMode(count: Int) {
+		splitscreenCount = count;
+		projection = FastMatrix4.perspectiveProjection(45.0, (System.pixelWidth / splitscreenCount) / System.pixelHeight, 0.1, 100.0);
+	}
+	
 	public function updateCamera(cameraPos: FastVector3, cameraLook: FastVector3) {
 		view = FastMatrix4.lookAt(cameraPos, cameraLook, new FastVector3(0, 1, 0));
 	}
 	
-	public function render(frame: Framebuffer) {
+	public function render(frame: Framebuffer, splitscreenID: Int = 0) {
 		// Render 3d scene
 		var g4 = frame.g4;
 		
 		g4.begin();
+		
+		var splitscreenWidth = Std.int(System.pixelWidth / splitscreenCount);
+		g4.viewport(splitscreenID * splitscreenWidth, 0, splitscreenWidth, System.pixelHeight);
+		g4.scissor(splitscreenID * splitscreenWidth, 0, splitscreenWidth, System.pixelHeight);
 		
 		basicPipeline.set(g4, view, light1, light2, light3, light4, light5, light6, light7, light8); // Depth clear only works when depth test is enabled!
 		g4.clear(clearColor);
@@ -135,6 +144,7 @@ class Renderer {
 			}
 		}
 		
+		g4.disableScissor();
 		
         g4.end();
 		
