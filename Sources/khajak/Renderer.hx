@@ -26,8 +26,8 @@ class Renderer {
 	var billboardPipelineInstanced: BillboardPipeline;
 	var vertexBuffersBillboardInstanced : Array<VertexBuffer> = new Array();
 	
-	var view: FastMatrix4;
-	var projection: FastMatrix4;
+	public var view: FastMatrix4;
+	public var projection: FastMatrix4;
 	var splitscreenCount: Int;
 	
 	public var light1: Light;
@@ -87,8 +87,7 @@ class Renderer {
 		view = FastMatrix4.lookAt(cameraPos, cameraLook, new FastVector3(0, 1, 0));
 	}
 	
-	public function render(frame: Framebuffer, splitscreenID: Int = 0) {
-		// Render 3d scene
+	public function beginRender(frame: Framebuffer, splitscreenID: Int = 0) {
 		var g4 = frame.g4;
 		
 		g4.begin();
@@ -99,6 +98,19 @@ class Renderer {
 		
 		basicPipeline.set(g4, view, light1, light2, light3, light4, light5, light6, light7, light8); // Depth clear only works when depth test is enabled!
 		g4.clear(clearColor);
+	}
+	
+	public function endRender(frame: Framebuffer, splitscreenID: Int = 0) {
+		var g4 = frame.g4;
+		g4.disableScissor();
+        g4.end();
+	}
+	
+	public function render(frame: Framebuffer, splitscreenID: Int = 0) {
+		// Render 3d scene
+		var g4 = frame.g4;
+		
+		basicPipeline.set(g4, view, light1, light2, light3, light4, light5, light6, light7, light8); // Depth clear only works when depth test is enabled!
 		
 		for (object in objects) {
 			renderObject(g4, basicPipeline, object);
@@ -143,10 +155,6 @@ class Renderer {
 				}
 			}
 		}
-		
-		g4.disableScissor();
-		
-        g4.end();
 		
 		// Render 2d gui
 		/*var g2 = frame.g2;
@@ -212,6 +220,13 @@ class Renderer {
 		mvp = mvp.multmat(projection);
 		mvp = mvp.multmat(view);
 		mvp = mvp.multmat(model);
+		return mvp;
+	}
+	
+	public function calculateMV(): FastMatrix4 {
+		var mvp : FastMatrix4 = FastMatrix4.identity();
+		mvp = mvp.multmat(projection);
+		mvp = mvp.multmat(view);
 		return mvp;
 	}
 }
