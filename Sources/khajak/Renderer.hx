@@ -200,51 +200,11 @@ class Renderer {
 	private function addParticleToInstanceBuffers(particle : Particle, bufferData : Float32Array, position : Int) {
 		var actualPosition = position * VertexStructures.BillboardsInstanced.byteSize();
 		
-		addVector2ToBuffer(bufferData, particle.size, actualPosition);
-		addVector3ToBuffer(bufferData, particle.position, actualPosition + 2);
-		addVector2ToBuffer(bufferData, particle.rotData, actualPosition + 5);
-		addColorToBuffer(bufferData, particle.color, actualPosition + 7);
-		addMatrixToBuffer(bufferData, calculateMVP(particle.model), actualPosition + 11);
-	}
-	
-	private function addVector2ToBuffer(buffer : Float32Array, vector : FastVector2, offset : Int) {
-		buffer.set(offset +  0, vector.x);
-		buffer.set(offset +  1, vector.y);
-	}
-	
-	private function addVector3ToBuffer(buffer: Float32Array, vector: FastVector3, offset: Int) {
-		buffer.set(offset +  0, vector.x);
-		buffer.set(offset +  1, vector.y);
-		buffer.set(offset +  2, vector.z);
-	}
-	
-	private function addColorToBuffer(buffer : Float32Array, color : Color, offset : Int) {
-		buffer.set(offset +  0, color.R);
-		buffer.set(offset +  1, color.G);
-		buffer.set(offset +  2, color.B);
-		buffer.set(offset +  3, color.A);
-	}
-	
-	private function addMatrixToBuffer(buffer : Float32Array, matrix : FastMatrix4, offset : Int) {
-		buffer.set(offset +  0, matrix._00);
-		buffer.set(offset +  1, matrix._01);
-		buffer.set(offset +  2, matrix._02);
-		buffer.set(offset +  3, matrix._03);
-		
-		buffer.set(offset +  4, matrix._10);
-		buffer.set(offset +  5, matrix._11);
-		buffer.set(offset +  6, matrix._12);
-		buffer.set(offset +  7, matrix._13);
-		
-		buffer.set(offset +  8, matrix._20);				
-		buffer.set(offset +  9, matrix._21);				
-		buffer.set(offset + 10, matrix._22);
-		buffer.set(offset + 11, matrix._23);
-		
-		buffer.set(offset + 12, matrix._30);				
-		buffer.set(offset + 13, matrix._31);				
-		buffer.set(offset + 14, matrix._32);
-		buffer.set(offset + 15, matrix._33);
+		bufferData.setVector2(actualPosition, particle.size);
+		bufferData.setVector3(actualPosition + 2, particle.position);
+		bufferData.setVector2(actualPosition + 5, particle.rotData);
+		bufferData.setColor(actualPosition + 7, particle.color);
+		bufferData.setMatrix4(actualPosition + 11, calculateMVP(particle.model));
 	}
 	
 	function calculateMVP(model: FastMatrix4) : FastMatrix4 {
