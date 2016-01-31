@@ -17,6 +17,8 @@ import kha.System;
 import khajak.particles.Emitter;
 import khajak.particles.Particle;
 
+using kha.Float32ArrayExtensions;
+
 class Renderer {
 	
 	public static var PARTICLE_BATCH_SIZE : Int = 256;
