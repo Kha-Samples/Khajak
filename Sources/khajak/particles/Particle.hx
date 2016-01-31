@@ -75,7 +75,7 @@ class Particle {
 	}
 	
 	private function updateColor() {
-		color = Color.fromFloats(interpolate(colorStart.R, colorEnd.R), interpolate(colorStart.G, colorEnd.G), interpolate(colorStart.B, colorEnd.B));
+		color = Color.fromFloats(interpolate(colorStart.R, colorEnd.R), interpolate(colorStart.G, colorEnd.G), interpolate(colorStart.B, colorEnd.B), interpolate(colorStart.A, colorEnd.A));
 	}
 	
 	private function interpolate(start: Float, end: Float): Float {

@@ -90,7 +90,7 @@ class Emitter {
 		
 		this.rateMin = rateMin;
 		this.rateMax = rateMax;
-		rateNext = getRandomValue(rateMin, rateMax);
+		rateNext = random.GetFloatIn(rateMin, rateMax);
 		this.maxCount = maxCount;
 		this.texture = texture;
 		
@@ -138,7 +138,7 @@ class Emitter {
 		if (remainingTime > 0 && particleCounts[currentBufferId] < maxCount) {
 			while (sinceLastEmission >= rateNext) {
 				sinceLastEmission -= rateNext;
-				rateNext = getRandomValue(rateMin, rateMax);
+				rateNext = random.GetFloatIn(rateMin, rateMax);
 				emitParticle();
 			}
 		}
@@ -146,21 +146,21 @@ class Emitter {
 	
 	private function emitParticle() {
 		var orthoVector = direction.cross(new FastVector3(0, 0, 1));
-		orthoVector = rotateAroundAxis(orthoVector, direction, getRandomValue(0, 2 * Math.PI));
+		orthoVector = rotateAroundAxis(orthoVector, direction, random.GetFloatIn(0, 2 * Math.PI));
 		orthoVector.normalize();
-		var nextPosition = position.add(orthoVector.mult(getRandomValue(radiusMin, radiusMax)));
+		var nextPosition = position.add(orthoVector.mult(random.GetFloatIn(radiusMin, radiusMax)));
 		
-		var nextAngle = getRandomValue(-spreadAngle, spreadAngle);
+		var nextAngle = random.GetFloatIn(-spreadAngle, spreadAngle);
 		var nextDirection = direction.add(orthoVector.mult(Math.tan(nextAngle)));
-		nextDirection = rotateAroundAxis(nextDirection, direction, getRandomValue(0, 2 * Math.PI));
+		nextDirection = rotateAroundAxis(nextDirection, direction, random.GetFloatIn(0, 2 * Math.PI));
 		nextDirection.normalize();
 		
-		var nextTimeToLive = getRandomValue(timeToLiveMin, timeToLiveMax);
+		var nextTimeToLive = random.GetFloatIn(timeToLiveMin, timeToLiveMax);
 		var nextSize = getRandomVectorValue(sizeMin, sizeMax);
-		var nextRotationStart = getRandomValue(rotationStartMin, rotationStartMax);
-		var nextRotationEnd = getRandomValue(rotationEndMin, rotationEndMax);
-		var nextSpeedStart = getRandomValue(speedStartMin, speedStartMax);
-		var nextSpeedEnd = getRandomValue(speedEndMin, speedEndMax);
+		var nextRotationStart = random.GetFloatIn(rotationStartMin, rotationStartMax);
+		var nextRotationEnd = random.GetFloatIn(rotationEndMin, rotationEndMax);
+		var nextSpeedStart = random.GetFloatIn(speedStartMin, speedStartMax);
+		var nextSpeedEnd = random.GetFloatIn(speedEndMin, speedEndMax);
 		var nextColorStart = getRandomColorValue(colorStartMin, colorStartMax);
 		var nextColorEnd = getRandomColorValue(colorEndMin, colorEndMax);
 		
@@ -173,19 +173,11 @@ class Emitter {
 		return vector.mult(Math.cos(angle)).add((normalizedAxis.cross(vector)).mult(Math.sin(angle))).add(normalizedAxis.mult(normalizedAxis.dot(vector)).mult(1 - Math.cos(angle)));
 	}
 	
-	private inline function getRandomValue(min: Float, max: Float): Float {
-		return min + random.GetFloat() * (max - min);
-	}
-	
-	private inline function getRandomValueInRange(range: Vector2): Float {
-		return getRandomValue(range.x, range.y);
-	}
-	
 	private inline function getRandomVectorValue(min: FastVector2, max: FastVector2): FastVector2 {
 		return new FastVector2(min.x + random.GetFloat() * (max.x - min.x), min.y + random.GetFloat() * (max.y - min.y));
 	}
 	
 	private inline function getRandomColorValue(min: Color, max: Color): Color {
-		return Color.fromFloats(getRandomValue(min.R, max.R), getRandomValue(min.G, max.G), getRandomValue(min.B, max.B));
+		return Color.fromFloats(random.GetFloatIn(min.R, max.R), random.GetFloatIn(min.G, max.G), random.GetFloatIn(min.B, max.B), random.GetFloatIn(min.A, max.A));
 	}
 }
