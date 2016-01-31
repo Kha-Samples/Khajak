@@ -47,7 +47,7 @@ class BasicPipeline {
 	public var modelMatrixID: ConstantLocation;
 	public var mvpMatrixID: ConstantLocation;
 	
-	public function new(fragmentShader: FragmentShader, vertexShader: VertexShader, inputLayout: Array<VertexStructure>) {
+	public function new(fragmentShader: FragmentShader, vertexShader: VertexShader, inputLayout: Array<VertexStructure>, writeStencil: Bool = false) {
 		pipeline = new PipelineState();
 		pipeline.fragmentShader = fragmentShader;
 		pipeline.vertexShader = vertexShader;
@@ -57,6 +57,12 @@ class BasicPipeline {
 		pipeline.cullMode = CullMode.CounterClockwise;
 		pipeline.blendSource = BlendingOperation.SourceAlpha;
 		pipeline.blendDestination = BlendingOperation.InverseSourceAlpha;
+		if (writeStencil) {
+			pipeline.stencilWriteMask = 0xff;
+			pipeline.stencilReferenceValue = 1;
+			pipeline.stencilMode = kha.graphics4.CompareMode.Always;
+			pipeline.stencilBothPass = kha.graphics4.StencilAction.Replace;
+		}
 		pipeline.compile();
 		
 		textureUnit = pipeline.getTextureUnit("texture");
