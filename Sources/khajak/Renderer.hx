@@ -22,6 +22,7 @@ class Renderer {
 	public static var PARTICLE_BATCH_SIZE : Int = 256;
 	
 	var basicPipeline: BasicPipeline;
+	var basicStencilPipeline: BasicPipeline;
 	var billboardPipeline: BillboardPipeline;
 	var billboardPipelineInstanced: BillboardPipeline;
 	var vertexBuffersBillboardInstanced : Array<VertexBuffer> = new Array();
@@ -49,6 +50,7 @@ class Renderer {
 		this.clearColor = clearColor;
 		
 		basicPipeline = new BasicPipeline(Shaders.basic_frag, Shaders.basic_vert, [ VertexStructures.Basic ]);
+		basicStencilPipeline = new BasicPipeline(Shaders.basic_frag, Shaders.basic_vert, [ VertexStructures.Basic ], true);
 		billboardPipeline = new BillboardPipeline(Shaders.billboard_frag, Shaders.billboard_uniform_vert, [ VertexStructures.Billboards ]);
 		billboardPipelineInstanced = new BillboardPipeline(Shaders.billboard_frag, Shaders.billboard_attribute_vert, [ VertexStructures.Billboards, VertexStructures.BillboardsInstanced ]);
 		
@@ -97,7 +99,7 @@ class Renderer {
 		g4.scissor(splitscreenID * splitscreenWidth, 0, splitscreenWidth, System.pixelHeight);
 		
 		basicPipeline.set(g4, view, light1, light2, light3, light4, light5, light6, light7, light8); // Depth clear only works when depth test is enabled!
-		g4.clear(clearColor);
+		g4.clear(clearColor, 10000, 0);
 	}
 	
 	public function endRender(frame: Framebuffer, splitscreenID: Int = 0) {
@@ -110,10 +112,8 @@ class Renderer {
 		// Render 3d scene
 		var g4 = frame.g4;
 		
-		basicPipeline.set(g4, view, light1, light2, light3, light4, light5, light6, light7, light8); // Depth clear only works when depth test is enabled!
-		
 		for (object in objects) {
-			renderObject(g4, basicPipeline, object);
+			renderObject(g4, object.writestencil ? basicStencilPipeline : basicPipeline, object);
 		}
 		
 		billboardPipeline.set(g4, view);
@@ -178,6 +178,8 @@ class Renderer {
 	}
 	
 	function renderObject(g4: Graphics, pipeline: BasicPipeline, object: RenderObject) {
+		pipeline.set(g4, view, light1, light2, light3, light4, light5, light6, light7, light8);
+		
 		g4.setFloat3(pipeline.colorID, object.color.R, object.color.G, object.color.B);
 		g4.setMatrix(pipeline.modelMatrixID, object.model);
 		g4.setMatrix(pipeline.mvpMatrixID, calculateMVP(object.model));

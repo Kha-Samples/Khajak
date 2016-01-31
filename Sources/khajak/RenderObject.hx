@@ -9,13 +9,15 @@ class RenderObject {
 	public var mesh: Mesh;
 	public var color: Color;
 	public var texture: Image;
+	public var writestencil: Bool;
 	
 	public var model: FastMatrix4;
 	
-	public function new(mesh: Mesh, color: Color, texture: Image) {
+	public function new(mesh: Mesh, color: Color, texture: Image, writestencil: Bool = false) {
 		this.mesh = mesh;
 		this.color = color;
 		this.texture = texture;
+		this.writestencil = writestencil;
 		
 		this.model = FastMatrix4.identity();
 	}
