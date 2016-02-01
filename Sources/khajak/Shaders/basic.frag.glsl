@@ -16,7 +16,7 @@ varying vec3 lightDirectionCameraspace7;
 varying vec3 lightDirectionCameraspace8;*/
 varying vec4 fragmentColor;
 
-uniform sampler2D texture;
+uniform sampler2D tex;
 uniform vec3 light1Color;
 uniform float light1Power;
 uniform vec3 light1Position;
@@ -45,7 +45,7 @@ uniform vec3 light8Position;
 vec3 calculateLight(vec3 lightColor, float lightPower, vec3 pos, vec3 directionCameraspace, vec3 materialDiffuseColor, vec3 materialSpecularColor);  // declare a function
 
 void kore() {
-	vec3 materialDiffuseColor = fragmentColor.xyz + texture2D(texture, vUV).xyz;
+	vec3 materialDiffuseColor = fragmentColor.xyz + texture2D(tex, vUV).xyz;
 	vec3 materialAmbientColor = vec3(0.1, 0.1, 0.1) * materialDiffuseColor;
 	vec3 materialSpecularColor = vec3(0.3, 0.3, 0.3);
 	

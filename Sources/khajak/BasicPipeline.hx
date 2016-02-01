@@ -65,7 +65,7 @@ class BasicPipeline {
 		}
 		pipeline.compile();
 		
-		textureUnit = pipeline.getTextureUnit("texture");
+		textureUnit = pipeline.getTextureUnit("tex");
 		
 		viewMatrixID = pipeline.getConstantLocation("viewMatrix");
 		light1ColorID = pipeline.getConstantLocation("light1Color");

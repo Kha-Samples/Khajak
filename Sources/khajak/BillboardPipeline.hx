@@ -37,7 +37,7 @@ class BillboardPipeline {
 		pipeline.blendDestination = BlendingOperation.InverseSourceAlpha;
 		pipeline.compile();
 		
-		textureUnit = pipeline.getTextureUnit("texture");
+		textureUnit = pipeline.getTextureUnit("tex");
 		
 		viewMatrixID = pipeline.getConstantLocation("viewMatrix");
 		
