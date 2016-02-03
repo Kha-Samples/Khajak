@@ -1,7 +1,6 @@
 package khajak;
 
 import kha.arrays.Float32Array;
-import kha.Assets;
 import kha.Color;
 import kha.Framebuffer;
 import kha.graphics4.Graphics;
@@ -128,17 +127,19 @@ class Renderer {
 			
 			var bufferData = vertexBuffersBillboardInstanced[1].lock();
 			var i = 0;
+			var particleTexture: kha.Image = null;
 			for (emitter in particleEmitters) {				
 				for (pi in 0...emitter.particleCount) {
-					if (i == PARTICLE_BATCH_SIZE) {
+					if (i == PARTICLE_BATCH_SIZE || (emitter.particles[pi].texture != particleTexture && particleTexture != null)) {
 						// Render current batch
-						actuallyRenderParticlesInstanced(g4, i);
+						actuallyRenderParticlesInstanced(g4, i, particleTexture);
 						
 						// Prepare for next batch
 						bufferData = vertexBuffersBillboardInstanced[1].lock();
 						i = 0;
 					}
 					
+					particleTexture = emitter.particles[pi].texture;
 					addParticleToInstanceBuffers(emitter.particles[pi], bufferData, i);
 					i++;
 				}
@@ -146,7 +147,7 @@ class Renderer {
 			
 			// Render rest
 			if (i > 0) {
-				actuallyRenderParticlesInstanced(g4, i);
+				actuallyRenderParticlesInstanced(g4, i, particleTexture);
 			}
 		}
 		else {
@@ -168,13 +169,13 @@ class Renderer {
 		g2.end();*/
     }
 	
-	function actuallyRenderParticlesInstanced(g : Graphics, i : Int) {
+	function actuallyRenderParticlesInstanced(g: Graphics, i: Int, texture: kha.Image) {
 		vertexBuffersBillboardInstanced[1].unlock();
 		
 		g.setVertexBuffers(vertexBuffersBillboardInstanced);
 		g.setIndexBuffer(Meshes.Billboard.indexBuffer);
 		
-		g.setTexture(billboardPipelineInstanced.textureUnit, Assets.images.smoke);
+		g.setTexture(billboardPipelineInstanced.textureUnit, texture);
 		
 		g.drawIndexedVerticesInstanced(i);
 	}
