@@ -1,5 +1,6 @@
 package khajak;
 import kha.Color;
+import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.ConstantLocation;
@@ -33,8 +34,8 @@ class BillboardPipeline {
 		pipeline.depthWrite = false; // Particles usually have transparent parts, so they should not cover each other
 		pipeline.depthMode = CompareMode.Less;
 		pipeline.cullMode = CullMode.CounterClockwise;
-		pipeline.blendSource = BlendingOperation.SourceAlpha;
-		pipeline.blendDestination = BlendingOperation.InverseSourceAlpha;
+		pipeline.blendSource = BlendingFactor.SourceAlpha;
+		pipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
 		pipeline.compile();
 		
 		textureUnit = pipeline.getTextureUnit("tex");

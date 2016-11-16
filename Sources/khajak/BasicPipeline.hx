@@ -1,5 +1,6 @@
 package khajak;
 import kha.Color;
+import kha.graphics4.BlendingFactor;
 import kha.graphics4.BlendingOperation;
 import kha.graphics4.CompareMode;
 import kha.graphics4.ConstantLocation;
@@ -55,8 +56,8 @@ class BasicPipeline {
 		pipeline.depthWrite = true;
 		pipeline.depthMode = CompareMode.Less;
 		pipeline.cullMode = CullMode.CounterClockwise;
-		pipeline.blendSource = BlendingOperation.SourceAlpha;
-		pipeline.blendDestination = BlendingOperation.InverseSourceAlpha;
+		pipeline.blendSource = BlendingFactor.SourceAlpha;
+		pipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
 		if (writeStencil) {
 			pipeline.stencilWriteMask = 0xff;
 			pipeline.stencilReferenceValue = 1;

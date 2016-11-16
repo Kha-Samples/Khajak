@@ -83,7 +83,7 @@ class Renderer {
 	
 	public function setSplitscreenMode(count: Int) {
 		splitscreenCount = count;
-		projection = FastMatrix4.perspectiveProjection(45.0, (System.pixelWidth / splitscreenCount) / System.pixelHeight, 0.1, 100.0);
+		projection = FastMatrix4.perspectiveProjection(45.0, (System.windowWidth() / splitscreenCount) / System.windowHeight(), 0.1, 100.0);
 	}
 	
 	public function updateCamera(cameraPos: FastVector3, cameraLook: FastVector3) {
@@ -95,9 +95,9 @@ class Renderer {
 		
 		g4.begin();
 		
-		var splitscreenWidth = Std.int(System.pixelWidth / splitscreenCount);
-		g4.viewport(splitscreenID * splitscreenWidth, 0, splitscreenWidth, System.pixelHeight);
-		g4.scissor(splitscreenID * splitscreenWidth, 0, splitscreenWidth, System.pixelHeight);
+		var splitscreenWidth = Std.int(System.windowWidth() / splitscreenCount);
+		g4.viewport(splitscreenID * splitscreenWidth, 0, splitscreenWidth, System.windowHeight());
+		g4.scissor(splitscreenID * splitscreenWidth, 0, splitscreenWidth, System.windowHeight());
 		
 		basicPipeline.set(g4, view, light1, light2, light3, light4, light5, light6, light7, light8); // Depth clear only works when depth test is enabled!
 		g4.clear(clearColor, 10000, 0);
