@@ -11,7 +11,7 @@ class Mesh {
 
 	public function new(data: Array<Float>, indices: Array<Int>, vertexStructure: VertexStructure) {
 		vertexBuffer = new VertexBuffer(
-		  Std.int(data.length / vertexStructure.byteSize()),
+		  Std.int(data.length / (vertexStructure.byteSize() / 4)),
 		  vertexStructure,
 		  Usage.StaticUsage
 		);

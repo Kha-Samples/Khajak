@@ -83,7 +83,7 @@ class Renderer {
 	
 	public function setSplitscreenMode(count: Int) {
 		splitscreenCount = count;
-		projection = FastMatrix4.perspectiveProjection(45.0, (System.windowWidth() / splitscreenCount) / System.windowHeight(), 0.1, 100.0);
+		projection = FastMatrix4.perspectiveProjection(Math.PI / 4, (System.windowWidth() / splitscreenCount) / System.windowHeight(), 0.1, 100.0);
 	}
 	
 	public function updateCamera(cameraPos: FastVector3, cameraLook: FastVector3) {
@@ -211,7 +211,7 @@ class Renderer {
 	}
 	
 	private function addParticleToInstanceBuffers(particle : Particle, bufferData : Float32Array, position : Int) {
-		var actualPosition = position * VertexStructures.BillboardsInstanced.byteSize();
+		var actualPosition = position * Std.int(VertexStructures.BillboardsInstanced.byteSize() / 4);
 		
 		bufferData.setVector2(actualPosition, particle.size);
 		bufferData.setVector3(actualPosition + 2, particle.position);

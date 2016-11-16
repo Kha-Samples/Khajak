@@ -55,7 +55,7 @@ class BasicPipeline {
 		pipeline.inputLayout = inputLayout;
 		pipeline.depthWrite = true;
 		pipeline.depthMode = CompareMode.Less;
-		pipeline.cullMode = CullMode.CounterClockwise;
+		pipeline.cullMode = CullMode.Clockwise;
 		pipeline.blendSource = BlendingFactor.SourceAlpha;
 		pipeline.blendDestination = BlendingFactor.InverseSourceAlpha;
 		if (writeStencil) {
