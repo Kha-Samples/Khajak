@@ -1,12 +1,12 @@
-#ifdef GL_ES
-precision mediump float;
-#endif
+#version 450
 
-varying vec2 vUV;
-varying vec4 fragmentColor;
+in vec2 vUV;
+in vec4 fragmentColor;
+
+out vec4 frag;
 
 uniform sampler2D tex;
 
-void kore() {  
-	gl_FragColor = fragmentColor * vec4(texture2D(tex, vUV).rgba);
+void main() {  
+	frag = fragmentColor * vec4(texture(tex, vUV).rgba);
 }

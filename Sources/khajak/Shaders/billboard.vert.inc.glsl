@@ -1,12 +1,8 @@
-#ifdef GL_ES
-precision highp float;
-#endif
+in vec3 pos;
+in vec2 uv;
 
-attribute vec3 pos;
-attribute vec2 uv;
-
-varying vec2 vUV;
-varying vec4 fragmentColor;
+out vec2 vUV;
+out vec4 fragmentColor;
 
 uniform mat4 viewMatrix;
 
@@ -16,7 +12,7 @@ attributeOrUniform vec2 rotData;
 attributeOrUniform vec4 baseColor;
 attributeOrUniform mat4 mvpMatrix;
 
-void kore() {
+void main() {
 	vec3 CameraRightWorldspace = normalize(vec3(viewMatrix[0][0], viewMatrix[1][0], viewMatrix[2][0]));
 	vec3 CameraUpWorldspace = normalize(vec3(viewMatrix[0][1], viewMatrix[1][1], viewMatrix[2][1]));
 	

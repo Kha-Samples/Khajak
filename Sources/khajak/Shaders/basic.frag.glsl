@@ -1,20 +1,20 @@
-#ifdef GL_ES
-precision mediump float;
-#endif
+#version 450
 
-varying vec2 vUV;
-varying vec3 positionWorldspace;
-varying vec3 normalCameraspace;
-varying vec3 eyeDirectionCameraspace;
-varying vec3 lightDirectionCameraspace1;
-varying vec3 lightDirectionCameraspace2;
-varying vec3 lightDirectionCameraspace3;
-varying vec3 lightDirectionCameraspace4;
-/*varying vec3 lightDirectionCameraspace5;
-varying vec3 lightDirectionCameraspace6;
-varying vec3 lightDirectionCameraspace7;
-varying vec3 lightDirectionCameraspace8;*/
-varying vec4 fragmentColor;
+in vec2 vUV;
+in vec3 positionWorldspace;
+in vec3 normalCameraspace;
+in vec3 eyeDirectionCameraspace;
+in vec3 lightDirectionCameraspace1;
+in vec3 lightDirectionCameraspace2;
+in vec3 lightDirectionCameraspace3;
+in vec3 lightDirectionCameraspace4;
+//in vec3 lightDirectionCameraspace5;
+//in vec3 lightDirectionCameraspace6;
+//in vec3 lightDirectionCameraspace7;
+//in vec3 lightDirectionCameraspace8;
+in vec4 fragmentColor;
+
+out vec4 frag;
 
 uniform sampler2D tex;
 uniform vec3 light1Color;
@@ -44,8 +44,8 @@ uniform vec3 light8Position;
 
 vec3 calculateLight(vec3 lightColor, float lightPower, vec3 pos, vec3 directionCameraspace, vec3 materialDiffuseColor, vec3 materialSpecularColor);  // declare a function
 
-void kore() {
-	vec3 materialDiffuseColor = fragmentColor.xyz + texture2D(tex, vUV).xyz;
+void main() {
+	vec3 materialDiffuseColor = fragmentColor.xyz + texture(tex, vUV).xyz;
 	vec3 materialAmbientColor = vec3(0.1, 0.1, 0.1) * materialDiffuseColor;
 	vec3 materialSpecularColor = vec3(0.3, 0.3, 0.3);
 	
@@ -59,7 +59,7 @@ void kore() {
 	calculateLight(light7Color, light7Power, light7Position, lightDirectionCameraspace7, materialDiffuseColor, materialSpecularColor) +
 	calculateLight(light8Color, light8Power, light8Position, lightDirectionCameraspace8, materialDiffuseColor, materialSpecularColor);*/
 
-	gl_FragColor = vec4(result, fragmentColor.a);
+	frag = vec4(result, fragmentColor.a);
 }
 
 vec3 calculateLight(vec3 lightColor, float lightPower, vec3 pos, vec3 directionCameraspace, vec3 materialDiffuseColor, vec3 materialSpecularColor) {

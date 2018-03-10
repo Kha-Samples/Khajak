@@ -16,6 +16,6 @@ class Physics {
 	}
 	
 	public static function update(delta: Float): Void {
-		world.value.stepSimulation(delta);
+		world.stepSimulation(delta);
 	}
 }
